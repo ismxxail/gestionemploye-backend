@@ -39,9 +39,9 @@ return [
         ],
 
         'public' => [
-           'driver' => 'local',
+            'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage',
+            'url' => rtrim(env('APP_URL', 'https://gestionemploye-backend.onrender.com'), '/').'/storage',
             'visibility' => 'public',
             'throw' => false,
             'report' => false,
