@@ -15,7 +15,7 @@ WORKDIR /var/www/html
 # تثبيت Dependencies
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# توليد المفتاح
+# توليد APP_KEY (مع تجاهل خطأ .env)
 RUN php artisan key:generate --force || true
 
 # الصلاحيات
@@ -25,10 +25,10 @@ RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 # Storage Link
 RUN php artisan storage:link || true
 
-# مهم: الانتظار حتى يبدأ php-fpm قبل nginx
-RUN echo "wait-for-it.sh" > /scripts/wait-for-php.sh && \
-    chmod +x /scripts/wait-for-php.sh
+# إنشاء مجلد scripts وإصلاح مشكلة الانتظار
+RUN mkdir -p /scripts
 
 EXPOSE 10000
 
-CMD ["sh", "-c", "php-fpm -D && sleep 3 && /start.sh"]
+# تشغيل php-fpm و nginx مع تأخير بسيط
+CMD ["sh", "-c", "php-fpm -D && sleep 4 && /start.sh"]
