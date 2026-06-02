@@ -15,20 +15,17 @@ WORKDIR /var/www/html
 # تثبيت Dependencies
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# توليد APP_KEY (مع تجاهل خطأ .env)
+# توليد APP_KEY
 RUN php artisan key:generate --force || true
 
-# الصلاحيات
+# إعطاء الصلاحيات الصحيحة
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Storage Link
+# إنشاء الـ storage link
 RUN php artisan storage:link || true
-
-# إنشاء مجلد scripts وإصلاح مشكلة الانتظار
-RUN mkdir -p /scripts
 
 EXPOSE 10000
 
-# تشغيل php-fpm و nginx مع تأخير بسيط
-CMD ["sh", "-c", "php-fpm -D && sleep 4 && /start.sh"]
+# الطريقة الأكثر استقراراً
+CMD ["sh", "-c", "php-fpm -D && sleep 3 && /start.sh"]
