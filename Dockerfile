@@ -25,12 +25,13 @@ RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 # Storage Link
 RUN php artisan storage:link || true
 
-# إنشاء مجلد scripts وإصلاح مشكلة الانتظار
+# إنشاء مجلد scripts
 RUN mkdir -p /scripts
+
+# نسخ سكريبت البداية
+COPY start.sh /usr/local/bin/migrate-and-start.sh
+RUN chmod +x /usr/local/bin/migrate-and-start.sh
 
 EXPOSE 10000
 
-RUN php artisan migrate --force || true
-
-# تشغيل php-fpm و nginx مع تأخير بسيط
-CMD ["sh", "-c", "php-fpm -D && sleep 4 && /start.sh"]
+CMD ["/usr/local/bin/migrate-and-start.sh"]
